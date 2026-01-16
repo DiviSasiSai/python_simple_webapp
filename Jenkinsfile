@@ -1,27 +1,27 @@
 pipeline {
     agent any
 
-    tools {
-        python 'Python3'
-    }
-
-    environment {
-        VENV = 'venv'
-    }
-
     stages {
 
-        stage('Checkout Code') {
+        stage('Check Python') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/DiviSasiSai/python_simple_webapp.git'
+                sh '''
+                python3 --version || python --version
+                '''
             }
         }
 
-        stage('Setup Virtual Environment') {
+        stage('Create Virtual Environment') {
             steps {
                 sh '''
                 python3 -m venv venv
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
                 source venv/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
@@ -33,16 +33,7 @@ pipeline {
             steps {
                 sh '''
                 source venv/bin/activate
-                pytest || true
-                '''
-            }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh '''
-                source venv/bin/activate
-                python app.py &
+                python -m pytest || true
                 '''
             }
         }
@@ -50,10 +41,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Python CI/CD Pipeline Successful"
+            echo '✅ Python CI Pipeline completed successfully'
         }
         failure {
-            echo "❌ Pipeline Failed"
+            echo '❌ Pipeline failed'
         }
     }
 }
