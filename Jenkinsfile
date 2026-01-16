@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<your-username>/python-web-app.git'
+                    url: 'https://github.com/DiviSasiSai/python_simple_webapp.git'
             }
         }
 
